@@ -1,0 +1,692 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AcadVerify — Verification Report</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+
+*,*::before,*::after{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#04070f;
+  --card:#0b1220;
+  --gold:#e8b84b;
+  --gold2:#f6d48a;
+  --teal:#00d4b4;
+  --cream:#ede8de;
+  --muted:#97a0bb;
+  --green:#2ecc71;
+  --red:#ff5c72;
+  --blue:#4da3ff;
+}
+
+body{
+  background:var(--bg);
+  color:var(--cream);
+  font-family:'Outfit',sans-serif;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND */
+
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+
+  background:
+  radial-gradient(circle at top left, rgba(58,123,213,.16), transparent 30%),
+  radial-gradient(circle at bottom right, rgba(0,212,180,.12), transparent 30%),
+  #04070f;
+}
+
+.grid{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+
+  background-image:
+  linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+
+  background-size:52px 52px;
+}
+
+/* NAVBAR */
+
+.nav{
+  height:78px;
+  padding:0 42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  border-bottom:1px solid rgba(232,184,75,.08);
+
+  background:rgba(5,10,18,.72);
+  backdrop-filter:blur(20px);
+
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.logo-circle{
+  width:50px;
+  height:50px;
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid rgba(232,184,75,.3);
+
+  background:
+  linear-gradient(135deg,
+  rgba(232,184,75,.18),
+  rgba(0,212,180,.12));
+
+  font-size:1.2rem;
+}
+
+.brand h1{
+  font-size:1.9rem;
+  font-family:'Cormorant Garamond',serif;
+
+  background:
+  linear-gradient(135deg,var(--gold2),var(--gold));
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.brand p{
+  font-size:.72rem;
+  color:var(--muted);
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.nav-btn{
+  padding:.8rem 1.2rem;
+  border:none;
+  border-radius:14px;
+
+  background:
+  linear-gradient(135deg,var(--gold),#ffd978);
+
+  color:#081018;
+  font-weight:600;
+
+  cursor:pointer;
+}
+
+/* WRAPPER */
+
+.wrapper{
+  width:min(1250px,92%);
+  margin:2.5rem auto;
+}
+
+/* TOP SECTION */
+
+.hero{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:1.8rem;
+
+  margin-bottom:2rem;
+}
+
+.card{
+  background:rgba(9,15,28,.9);
+
+  border:1px solid rgba(255,255,255,.06);
+
+  border-radius:28px;
+
+  padding:1.8rem;
+
+  backdrop-filter:blur(18px);
+
+  box-shadow:
+  0 10px 40px rgba(0,0,0,.35);
+}
+
+.card-title{
+  font-size:1.15rem;
+  color:var(--gold2);
+  margin-bottom:1.5rem;
+}
+
+/* REPORT HEADER */
+
+.report-head{
+  display:flex;
+  justify-content:space-between;
+  gap:2rem;
+  flex-wrap:wrap;
+}
+
+.report-id h2{
+  font-size:2.4rem;
+  margin-bottom:.5rem;
+}
+
+.report-id p{
+  color:var(--muted);
+}
+
+.verdict-banner{
+  margin-top:1.5rem;
+
+  padding:1rem 1.2rem;
+  border-radius:18px;
+
+  background:
+  linear-gradient(135deg,
+  rgba(46,204,113,.16),
+  rgba(0,212,180,.12));
+
+  border:1px solid rgba(46,204,113,.3);
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+}
+
+.verdict-banner h3{
+  font-size:1.15rem;
+}
+
+.score-pill{
+  padding:.75rem 1rem;
+  border-radius:999px;
+
+  background:rgba(255,255,255,.06);
+
+  font-weight:700;
+}
+
+/* TIMELINE */
+
+.timeline{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+
+.timeline-item{
+  display:flex;
+  gap:1rem;
+}
+
+.timeline-num{
+  min-width:38px;
+  height:38px;
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(77,163,255,.14);
+  color:#8bc2ff;
+
+  font-weight:700;
+}
+
+.timeline-content h4{
+  margin-bottom:.3rem;
+}
+
+.timeline-content p{
+  color:var(--muted);
+  font-size:.92rem;
+  line-height:1.6;
+}
+
+/* GRID */
+
+.report-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.8rem;
+
+  margin-top:2rem;
+}
+
+/* DETAILS */
+
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+
+  padding:1rem 0;
+
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.detail-row:last-child{
+  border:none;
+}
+
+.label{
+  color:var(--muted);
+}
+
+.value{
+  font-weight:600;
+}
+
+/* ANALYSIS */
+
+.reason-box{
+  background:rgba(255,255,255,.03);
+
+  border:1px solid rgba(255,255,255,.05);
+
+  border-radius:18px;
+
+  padding:1rem;
+
+  margin-bottom:1rem;
+}
+
+.reason-box strong{
+  display:block;
+  color:var(--gold2);
+  margin-bottom:.5rem;
+}
+
+.reason-box p{
+  line-height:1.7;
+  color:#bcc5da;
+}
+
+/* BARS */
+
+.bar-wrap{
+  margin-bottom:1.5rem;
+}
+
+.bar-head{
+  display:flex;
+  justify-content:space-between;
+
+  margin-bottom:.55rem;
+}
+
+.bar{
+  height:12px;
+  border-radius:999px;
+
+  overflow:hidden;
+
+  background:rgba(255,255,255,.06);
+}
+
+.fill{
+  height:100%;
+  border-radius:999px;
+}
+
+.fill.ai{
+  width:88%;
+  background:
+  linear-gradient(90deg,var(--teal),#63ffe4);
+}
+
+.fill.db{
+  width:82%;
+  background:
+  linear-gradient(90deg,var(--gold),#ffe59c);
+}
+
+.fill.comp{
+  width:95%;
+  background:
+  linear-gradient(90deg,#2ecc71,#9effc6);
+}
+
+/* DOWNLOAD */
+
+.download-section{
+  margin-top:2rem;
+
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:1rem 1.5rem;
+
+  border:none;
+  border-radius:16px;
+
+  font-family:'Outfit',sans-serif;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:.25s;
+}
+
+.btn-primary{
+  background:
+  linear-gradient(135deg,var(--gold),#ffdd91);
+
+  color:#081018;
+
+  box-shadow:
+  0 8px 24px rgba(232,184,75,.25);
+}
+
+.btn-primary:hover,
+.btn-secondary:hover{
+  transform:translateY(-3px);
+}
+
+.btn-secondary{
+  background:rgba(255,255,255,.05);
+  color:var(--cream);
+
+  border:1px solid rgba(255,255,255,.08);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:950px){
+
+  .hero,
+  .report-grid{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media(max-width:700px){
+
+  .nav{
+    padding:0 20px;
+  }
+
+  .brand p{
+    display:none;
+  }
+
+  .report-id h2{
+    font-size:2rem;
+  }
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<!-- NAV -->
+
+<nav class="nav">
+
+  <div class="logo">
+
+    <div class="logo-circle">📑</div>
+
+    <div class="brand">
+      <h1>AcadVerify</h1>
+      <p>Verification Report Center</p>
+    </div>
+
+  </div>
+
+  <button class="nav-btn" onclick="window.location.href='result.html'">
+    ← Back to Result
+  </button>
+
+</nav>
+
+<!-- MAIN -->
+
+<div class="wrapper">
+
+  <!-- HERO -->
+
+  <div class="hero">
+
+    <!-- LEFT -->
+
+    <div class="card">
+
+      <div class="card-title">Verification Report</div>
+
+      <div class="report-head">
+
+        <div class="report-id">
+
+          <h2>Report #AV-2026-921</h2>
+
+          <p>
+            Generated on 11 May 2026 · Verified by AI Engine + DB Match
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="verdict-banner">
+
+        <div>
+          <h3>✅ Genuine Certificate</h3>
+          <p style="margin-top:.4rem;color:#bdd3c9;">
+            Certificate authenticity successfully verified
+          </p>
+        </div>
+
+        <div class="score-pill">
+          87% Score
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="card">
+
+      <div class="card-title">Verification Timeline</div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+
+          <div class="timeline-num">1</div>
+
+          <div class="timeline-content">
+            <h4>OCR Text Extraction</h4>
+            <p>System extracted certificate fields and metadata successfully.</p>
+          </div>
+
+        </div>
+
+        <div class="timeline-item">
+
+          <div class="timeline-num">2</div>
+
+          <div class="timeline-content">
+            <h4>AI Pattern Analysis</h4>
+            <p>Typography, seal positioning and document structure were analyzed.</p>
+          </div>
+
+        </div>
+
+        <div class="timeline-item">
+
+          <div class="timeline-num">3</div>
+
+          <div class="timeline-content">
+            <h4>Database Validation</h4>
+            <p>Institution records matched the uploaded certificate information.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- GRID -->
+
+  <div class="report-grid">
+
+    <!-- DETAILS -->
+
+    <div class="card">
+
+      <div class="card-title">Extracted Certificate Data</div>
+
+      <div class="detail-row">
+        <span class="label">Student Name</span>
+        <span class="value">Aarav Sharma</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Institution</span>
+        <span class="value">Delhi Institute of Technology</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Certificate Type</span>
+        <span class="value">B.Tech Degree</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Issue Date</span>
+        <span class="value">12 July 2025</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="label">Verification Status</span>
+        <span class="value" style="color:#2ecc71;">
+          Genuine
+        </span>
+      </div>
+
+    </div>
+
+    <!-- ANALYSIS -->
+
+    <div class="card">
+
+      <div class="card-title">AI Analysis Summary</div>
+
+      <div class="reason-box">
+
+        <strong>Document Integrity</strong>
+
+        <p>
+          The uploaded document passed AI integrity validation checks including font consistency, metadata matching, seal alignment and OCR verification.
+        </p>
+
+      </div>
+
+      <div class="bar-wrap">
+
+        <div class="bar-head">
+          <span>AI Pattern Match</span>
+          <span>88%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill ai"></div>
+        </div>
+
+      </div>
+
+      <div class="bar-wrap">
+
+        <div class="bar-head">
+          <span>Database Match</span>
+          <span>82%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill db"></div>
+        </div>
+
+      </div>
+
+      <div class="bar-wrap">
+
+        <div class="bar-head">
+          <span>Compliance Check</span>
+          <span>95%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill comp"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- BUTTONS -->
+
+  <div class="download-section">
+
+    <button class="btn btn-primary" id="downloadBtn">
+      Download PDF Report
+    </button>
+
+    <button class="btn btn-secondary" onclick="window.print()">
+      Print Report
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+// DOWNLOAD BUTTON
+
+document.getElementById("downloadBtn")
+.addEventListener("click",()=>{
+
+  alert("Downloading PDF Report...");
+
+});
+
+</script>
+
+</body>
+</html>
+

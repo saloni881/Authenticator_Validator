@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AcadVerify — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#04070f;--bg2:#0a0f1e;--bg3:#111827;
+  --gold:#e8b84b;--gold2:#f5d280;--gold3:#a07828;
+  --teal:#00d4b4;--blue:#3a7bd5;
+  --cream:#ede8de;--muted:#6b7694;--muted2:#9aa3bd;
+  --red:#f06060;--green:#4ade80;
+  --border:rgba(232,184,75,0.15);
+}
+html,body{height:100%;background:var(--bg);font-family:'Outfit',sans-serif;color:var(--cream);overflow-x:hidden;}
+body{padding-top:70px;}
+
+/* NAVBAR — admin only */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,15,30,0.85);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(232,184,75,0.12);
+  padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:70px;
+}
+.nav-logo{display:flex;align-items:center;gap:.85rem;}
+.nav-seal{width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.nav-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-tag{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-left:.5rem;}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-role{padding:.35rem .75rem;background:rgba(232,184,75,0.1);border:1px solid rgba(232,184,75,0.22);border-radius:999px;font-size:.72rem;font-weight:500;color:var(--gold2);letter-spacing:.05em;}
+.nav-btn{padding:.45rem 1rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.8rem;color:var(--cream);cursor:pointer;transition:all .2s;}
+.nav-btn:hover{background:rgba(255,255,255,0.07);border-color:var(--border);}
+
+/* MAIN CONTAINER */
+.container{max-width:1400px;margin:0 auto;padding:2rem;}
+
+/* PAGE HEADER */
+.page-head{margin-bottom:2.5rem;}
+.page-head h1{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.4rem;}
+.page-head h1 span{background:linear-gradient(90deg,var(--gold2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-head p{color:var(--muted2);font-size:.88rem;font-weight:300;}
+
+/* 4 STAT CARDS — Total / Genuine / Review / Fake */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-bottom:2.5rem;}
+.stat-card{
+  background:rgba(17,24,39,0.6);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:14px;
+  padding:1.5rem 1.4rem;
+  position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);}
+.stat-card.total{--accent:linear-gradient(90deg,var(--gold),var(--teal));}
+.stat-card.genuine{--accent:var(--green);}
+.stat-card.review{--accent:var(--blue);}
+.stat-card.fake{--accent:var(--red);}
+.stat-label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--cream);margin-bottom:.3rem;}
+.stat-change{font-size:.72rem;color:var(--muted2);}
+.stat-change.up{color:var(--green);}
+.stat-change.down{color:var(--red);}
+
+/* SECTION BLOCK */
+.section{background:rgba(17,24,39,0.5);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:1.8rem 1.6rem;margin-bottom:2rem;}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--cream);}
+.section-btn{padding:.4rem .85rem;background:rgba(232,184,75,0.08);border:1px solid rgba(232,184,75,0.2);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:500;color:var(--gold2);cursor:pointer;transition:all .2s;}
+.section-btn:hover{background:rgba(232,184,75,0.12);border-color:rgba(232,184,75,0.3);}
+
+/* BAR CHART — verifications per day (last 7 days) */
+.chart-wrap{position:relative;height:280px;background:rgba(0,0,0,0.2);border-radius:10px;padding:1.5rem;display:flex;align-items:flex-end;justify-content:space-around;gap:.8rem;}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:.5rem;}
+.chart-bar{width:100%;background:linear-gradient(180deg,var(--gold),var(--gold3));border-radius:6px 6px 0 0;transition:all .3s;cursor:pointer;position:relative;}
+.chart-bar:hover{filter:brightness(1.2);transform:translateY(-4px);}
+.chart-bar-val{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:.72rem;font-weight:600;color:var(--gold2);white-space:nowrap;}
+.chart-label{font-size:.7rem;color:var(--muted);letter-spacing:.02em;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-top:1rem;}
+.table{width:100%;border-collapse:collapse;font-size:.82rem;}
+.table thead{background:rgba(0,0,0,0.2);border-bottom:1px solid rgba(232,184,75,0.15);}
+.table th{padding:.85rem 1rem;text-align:left;font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:.7rem;color:var(--muted2);}
+.table td{padding:.9rem 1rem;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--cream);}
+.table tbody tr{transition:background .15s;}
+.table tbody tr:hover{background:rgba(232,184,75,0.03);}
+.table .badge{display:inline-block;padding:.25rem .6rem;border-radius:6px;font-size:.7rem;font-weight:500;letter-spacing:.02em;}
+.badge.fake{background:rgba(240,96,96,0.15);color:#f09090;border:1px solid rgba(240,96,96,0.25);}
+.badge.genuine{background:rgba(74,222,128,0.15);color:#7ee89f;border:1px solid rgba(74,222,128,0.25);}
+.badge.review{background:rgba(58,123,213,0.15);color:#7da7e8;border:1px solid rgba(58,123,213,0.25);}
+.table .action-btn{padding:.3rem .65rem;background:rgba(232,184,75,0.1);border:1px solid rgba(232,184,75,0.22);border-radius:6px;font-size:.72rem;color:var(--gold2);cursor:pointer;transition:all .2s;}
+.table .action-btn:hover{background:rgba(232,184,75,0.15);}
+.table .danger-btn{background:rgba(240,96,96,0.1);border-color:rgba(240,96,96,0.25);color:#f09090;}
+.table .danger-btn:hover{background:rgba(240,96,96,0.15);}
+
+/* INSTITUTION GRID */
+.inst-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:1rem;}
+.inst-card{background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:1.2rem;transition:all .2s;}
+.inst-card:hover{border-color:rgba(232,184,75,0.2);background:rgba(232,184,75,0.03);}
+.inst-name{font-weight:600;color:var(--cream);margin-bottom:.4rem;font-size:.9rem;}
+.inst-meta{font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
+.inst-count{font-size:.72rem;color:var(--gold2);font-weight:500;}
+
+/* BLACKLIST PANEL — red theme */
+.blacklist-section{border-left:3px solid var(--red);}
+.blacklist-section .section-title{color:#f09090;}
+.blacklist-list{display:flex;flex-direction:column;gap:.7rem;margin-top:1rem;}
+.blacklist-item{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:rgba(240,96,96,0.08);border:1px solid rgba(240,96,96,0.18);border-radius:8px;}
+.blacklist-name{font-weight:500;color:#f09090;font-size:.85rem;}
+.blacklist-reason{font-size:.72rem;color:var(--muted);}
+.blacklist-remove{padding:.3rem .7rem;background:rgba(240,96,96,0.15);border:1px solid rgba(240,96,96,0.3);border-radius:6px;font-size:.72rem;color:#f09090;cursor:pointer;transition:all .2s;}
+.blacklist-remove:hover{background:rgba(240,96,96,0.2);}
+
+/* AUDIT LOG — green theme */
+.audit-section{border-left:3px solid var(--green);}
+.audit-section .section-title{color:var(--green);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .navbar{padding:0 1rem;}
+  .container{padding:1rem;}
+  .stats-grid{grid-template-columns:1fr;}
+  .chart-wrap{height:220px;}
+  .nav-right{gap:.8rem;}
+  .nav-tag{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR — admin only access -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <div class="nav-seal">🎓</div>
+    <div>
+      <span class="nav-brand">AcadVerify</span>
+      <span class="nav-tag">Admin Dashboard</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-role">Admin Access</div>
+    <button class="nav-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- PAGE HEADER -->
+  <div class="page-head">
+    <h1>Dashboard <span>Overview</span></h1>
+    <p>Real-time verification statistics and system monitoring</p>
+  </div>
+
+  <!-- 4 STAT CARDS — Total / Genuine / Review / Fake -->
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-label">Total Verifications</div>
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-change up">↑ 12.5% from last week</div>
+    </div>
+    <div class="stat-card genuine">
+      <div class="stat-label">Genuine Certificates</div>
+      <div class="stat-num" id="statGenuine">0</div>
+      <div class="stat-change up">↑ 8.3% from last week</div>
+    </div>
+    <div class="stat-card review">
+      <div class="stat-label">Under Review</div>
+      <div class="stat-num" id="statReview">0</div>
+      <div class="stat-change">Pending verification</div>
+    </div>
+    <div class="stat-card fake">
+      <div class="stat-label">Flagged as Fake</div>
+      <div class="stat-num" id="statFake">0</div>
+      <div class="stat-change down">↓ 5.2% from last week</div>
+    </div>
+  </div>
+
+  <!-- BAR CHART — verifications per day (last 7 days) -->
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Verification Activity</h2>
+      <button class="section-btn">View Details</button>
+    </div>
+    <div class="chart-wrap" id="chartWrap">
+      <!-- Chart bars will be populated by JS -->
+    </div>
+  </div>
+
+  <!-- RECENT FLAGGED TABLE — latest 5 fake certificates -->
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Recent Flagged Documents</h2>
+      <button class="section-btn">View All</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Document ID</th>
+            <th>Institution</th>
+            <th>Uploaded By</th>
+            <th>Flagged Date</th>
+            <th>Confidence</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="flaggedTable">
+          <tr>
+            <td>DOC-7482</td>
+            <td>Stanford University</td>
+            <td>john.doe@email.com</td>
+            <td>2024-05-10</td>
+            <td>98.7%</td>
+            <td><span class="badge fake">Fake</span></td>
+            <td><button class="action-btn">Review</button></td>
+          </tr>
+          <tr>
+            <td>DOC-7380</td>
+            <td>MIT</td>
+            <td>sarah.k@email.com</td>
+            <td>2024-05-09</td>
+            <td>94.2%</td>
+            <td><span class="badge fake">Fake</span></td>
+            <td><button class="action-btn">Review</button></td>
+          </tr>
+          <tr>
+            <td>DOC-7215</td>
+            <td>Harvard University</td>
+            <td>alex.m@email.com</td>
+            <td>2024-05-08</td>
+            <td>89.5%</td>
+            <td><span class="badge fake">Fake</span></td>
+            <td><button class="action-btn">Review</button></td>
+          </tr>
+          <tr>
+            <td>DOC-7102</td>
+            <td>Oxford University</td>
+            <td>emma.w@email.com</td>
+            <td>2024-05-07</td>
+            <td>96.1%</td>
+            <td><span class="badge fake">Fake</span></td>
+            <td><button class="action-btn">Review</button></td>
+          </tr>
+          <tr>
+            <td>DOC-6998</td>
+            <td>Cambridge University</td>
+            <td>mike.r@email.com</td>
+            <td>2024-05-06</td>
+            <td>91.8%</td>
+            <td><span class="badge fake">Fake</span></td>
+            <td><button class="action-btn">Review</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- INSTITUTION LIST — all registered institutions -->
+  <div class="section">
+    <div class="section-head">
+      <h2 class="section-title">Registered Institutions</h2>
+      <button class="section-btn">Add Institution</button>
+    </div>
+    <div class="inst-grid">
+      <div class="inst-card">
+        <div class="inst-name">Stanford University</div>
+        <div class="inst-meta">📍 California, USA</div>
+        <div class="inst-meta">📧 admin@stanford.edu</div>
+        <div class="inst-count">2,847 verifications</div>
+      </div>
+      <div class="inst-card">
+        <div class="inst-name">MIT</div>
+        <div class="inst-meta">📍 Massachusetts, USA</div>
+        <div class="inst-meta">📧 verify@mit.edu</div>
+        <div class="inst-count">3,214 verifications</div>
+      </div>
+      <div class="inst-card">
+        <div class="inst-name">Harvard University</div>
+        <div class="inst-meta">📍 Massachusetts, USA</div>
+        <div class="inst-meta">📧 auth@harvard.edu</div>
+        <div class="inst-count">4,102 verifications</div>
+      </div>
+      <div class="inst-card">
+        <div class="inst-name">Oxford University</div>
+        <div class="inst-meta">📍 Oxford, UK</div>
+        <div class="inst-meta">📧 verify@ox.ac.uk</div>
+        <div class="inst-count">1,956 verifications</div>
+      </div>
+      <div class="inst-card">
+        <div class="inst-name">Cambridge University</div>
+        <div class="inst-meta">📍 Cambridge, UK</div>
+        <div class="inst-meta">📧 auth@cam.ac.uk</div>
+        <div class="inst-count">2,183 verifications</div>
+      </div>
+      <div class="inst-card">
+        <div class="inst-name">UC Berkeley</div>
+        <div class="inst-meta">📍 California, USA</div>
+        <div class="inst-meta">📧 verify@berkeley.edu</div>
+        <div class="inst-count">2,641 verifications</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLACKLIST PANEL — blocked offenders list -->
+  <div class="section blacklist-section">
+    <div class="section-head">
+      <h2 class="section-title">Blacklist Registry</h2>
+      <button class="section-btn">Add Entry</button>
+    </div>
+    <div class="blacklist-list">
+      <div class="blacklist-item">
+        <div>
+          <div class="blacklist-name">john.fraudster@email.com</div>
+          <div class="blacklist-reason">Multiple fake certificate uploads</div>
+        </div>
+        <button class="blacklist-remove">Remove</button>
+      </div>
+      <div class="blacklist-item">
+        <div>
+          <div class="blacklist-name">scam.institute@domain.net</div>
+          <div class="blacklist-reason">Impersonation of legitimate institution</div>
+        </div>
+        <button class="blacklist-remove">Remove</button>
+      </div>
+      <div class="blacklist-item">
+        <div>
+          <div class="blacklist-name">fake.docs@tempmail.com</div>
+          <div class="blacklist-reason">Repeated verification failures</div>
+        </div>
+        <button class="blacklist-remove">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT LOG TABLE — all user actions -->
+  <div class="section audit-section">
+    <div class="section-head">
+      <h2 class="section-title">Audit Log</h2>
+      <button class="section-btn">Export</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Document ID</th>
+            <th>IP Address</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2024-05-11 14:32:18</td>
+            <td>admin@acadverify.com</td>
+            <td>Verified document</td>
+            <td>DOC-7482</td>
+            <td>192.168.1.100</td>
+            <td><span class="badge genuine">Success</span></td>
+          </tr>
+          <tr>
+            <td>2024-05-11 14:28:45</td>
+            <td>verifier@stanford.edu</td>
+            <td>Uploaded certificate</td>
+            <td>DOC-7481</td>
+            <td>10.0.0.52</td>
+            <td><span class="badge review">Pending</span></td>
+          </tr>
+          <tr>
+            <td>2024-05-11 14:15:03</td>
+            <td>admin@acadverify.com</td>
+            <td>Flagged document</td>
+            <td>DOC-7480</td>
+            <td>192.168.1.100</td>
+            <td><span class="badge fake">Flagged</span></td>
+          </tr>
+          <tr>
+            <td>2024-05-11 13:58:22</td>
+            <td>verifier@mit.edu</td>
+            <td>Requested verification</td>
+            <td>DOC-7479</td>
+            <td>172.16.0.28</td>
+            <td><span class="badge genuine">Success</span></td>
+          </tr>
+          <tr>
+            <td>2024-05-11 13:42:10</td>
+            <td>admin@acadverify.com</td>
+            <td>Added to blacklist</td>
+            <td>USER-1847</td>
+            <td>192.168.1.100</td>
+            <td><span class="badge genuine">Success</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── ROLE CHECK ON LOAD ── */
+window.addEventListener('DOMContentLoaded', () => {
+  const role = localStorage.getItem('role');
+  if (role !== 'admin') {
+    alert('Access denied. Admin privileges required.');
+    window.location.href = 'login.html';
+    return;
+  }
+  loadDashboard();
+});
+
+/* ── LOAD DASHBOARD DATA ── */
+async function loadDashboard() {
+  // Simulates: GET /api/admin/stats
+  await sleep(300);
+  animCount(document.getElementById('statTotal'), 15248, '');
+  animCount(document.getElementById('statGenuine'), 12896, '');
+  animCount(document.getElementById('statReview'), 1524, '');
+  animCount(document.getElementById('statFake'), 828, '');
+  
+  // Simulates: GET /api/admin/daily-stats
+  renderChart();
+}
+
+/* ── ANIMATED COUNTER ── */
+function animCount(el, target, suffix) {
+  let start = 0;
+  const duration = 1200;
+  const step = () => {
+    start += Math.ceil(target / 60);
+    if (start >= target) {
+      el.textContent = target.toLocaleString() + suffix;
+      return;
+    }
+    el.textContent = start.toLocaleString() + suffix;
+    setTimeout(step, duration / 60);
+  };
+  step();
+}
+
+/* ── RENDER BAR CHART ── */
+function renderChart() {
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const data = [2145, 2387, 2098, 2564, 2312, 1876, 2210];
+  const maxVal = Math.max(...data);
+  const chartWrap = document.getElementById('chartWrap');
+  chartWrap.innerHTML = '';
+  
+  days.forEach((day, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-bar-wrap';
+    
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    const height = (data[i] / maxVal) * 200;
+    bar.style.height = height + 'px';
+    
+    const val = document.createElement('div');
+    val.className = 'chart-bar-val';
+    val.textContent = data[i].toLocaleString();
+    bar.appendChild(val);
+    
+    const label = document.createElement('div');
+    label.className = 'chart-label';
+    label.textContent = day;
+    
+    wrap.appendChild(bar);
+    wrap.appendChild(label);
+    chartWrap.appendChild(wrap);
+  });
+}
+
+/* ── LOGOUT ── */
+function logout() {
+  localStorage.removeItem('role');
+  window.location.href = 'login.html';
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+</script>
+</body>
+</html>

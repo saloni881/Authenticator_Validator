@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AcadVerify — History</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #04070f;
+  --card: #0a1020;
+  --gold: #e8b84b;
+  --gold2: #f5d280;
+  --teal: #00d4b4;
+  --cream: #ede8de;
+  --muted: #8f98b3;
+
+  --green: #2ecc71;
+  --red: #ff5c72;
+  --amber: #ffbe55;
+}
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+  radial-gradient(circle at top left, rgba(58,123,213,.16), transparent 30%),
+  radial-gradient(circle at bottom right, rgba(0,212,180,.12), transparent 30%);
+  z-index: -2;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+  linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 55px 55px;
+  z-index: -1;
+}
+
+/* NAVBAR */
+.nav {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 42px;
+  background: rgba(6,10,18,.72);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(232,184,75,.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(232,184,75,.25);
+  font-size: 1.2rem;
+}
+
+.brand h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand p {
+  font-size: .7rem;
+  color: var(--muted);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--cream);
+  padding: .8rem 1.2rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  transition: .25s;
+}
+
+.nav-links a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(232,184,75,.3);
+}
+
+/* WRAPPER */
+.wrapper {
+  width: min(1280px, 92%);
+  margin: 2rem auto;
+}
+
+/* PAGE HEAD */
+.page-head {
+  margin-bottom: 2rem;
+}
+
+.page-head h2 {
+  font-size: 2.7rem;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.page-head p {
+  color: var(--muted);
+  margin-top: .5rem;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.3rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(9,14,25,.92);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 22px;
+  padding: 1.5rem;
+  backdrop-filter: blur(18px);
+  transition: .25s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(232,184,75,.25);
+}
+
+.stat-title {
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.green { color: var(--green) }
+.red { color: var(--red) }
+.amber { color: var(--amber) }
+.gold { color: var(--gold2) }
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.8rem;
+}
+
+.search-box,
+.select-box {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  color: var(--cream);
+  outline: none;
+  backdrop-filter: blur(14px);
+}
+
+.search-box {
+  flex: 1;
+  min-width: 280px;
+}
+
+.select-box {
+  min-width: 180px;
+}
+
+/* TABLE CARD */
+.table-card {
+  background: rgba(8,13,24,.92);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 26px;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+}
+
+.table-head {
+  padding: 1.4rem 1.7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.table-head h3 {
+  color: var(--gold2);
+}
+
+.export-btn {
+  border: none;
+  padding: .9rem 1.3rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--gold), #ffdd91);
+  color: #081018;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 1.2rem 1.5rem;
+  color: var(--muted);
+  font-size: .85rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+td {
+  padding: 1.3rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+tr:hover {
+  background: rgba(255,255,255,.02);
+}
+
+/* BADGES */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem .9rem;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge.genuine {
+  background: rgba(46,204,113,.14);
+  color: #7dffba;
+}
+
+.badge.fake {
+  background: rgba(255,92,114,.14);
+  color: #ff8d9d;
+}
+
+.badge.review {
+  background: rgba(255,190,85,.14);
+  color: #ffd27b;
+}
+
+.view-btn {
+  text-decoration: none;
+  color: var(--gold2);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* PAGINATION */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.3rem 1.6rem;
+}
+
+.page-numbers {
+  display: flex;
+  gap: .7rem;
+}
+
+.page-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,.04);
+  color: var(--cream);
+  cursor: pointer;
+}
+
+.page-btn.active {
+  background: linear-gradient(135deg, var(--gold), #ffdd91);
+  color: #081018;
+}
+
+.next-btn {
+  border: none;
+  padding: .9rem 1.3rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  color: var(--cream);
+  cursor: pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media(max-width:760px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .nav {
+    padding: 0 18px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .table-card {
+    overflow-x: auto;
+  }
+  table {
+    min-width: 760px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-circle">🎓</div>
+    <div class="brand">
+      <h1>AcadVerify</h1>
+      <p>Verification History</p>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="upload.html">Upload</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="login.html">Logout</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="wrapper">
+  <!-- HEAD -->
+  <div class="page-head">
+    <h2>History</h2>
+    <p>Track all uploaded certificates and AI authenticity reports.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">Total Verifications</div>
+      <div class="stat-value gold" id="stat-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Genuine Certificates</div>
+      <div class="stat-value green" id="stat-genuine">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Fake Certificates</div>
+      <div class="stat-value red" id="stat-fake">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">Manual Review</div>
+      <div class="stat-value amber" id="stat-review">0</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by name, certificate ID or institution" />
+    <select class="select-box" id="statusFilter">
+      <option value="All">All Status</option>
+      <option value="genuine">Genuine</option>
+      <option value="fake">Fake</option>
+      <option value="review">Review</option>
+    </select>
+    <select class="select-box">
+      <option>Last 30 Days</option>
+      <option>Last 7 Days</option>
+      <option>Last 6 Months</option>
+      <option>All Time</option>
+    </select>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <div class="table-head">
+      <h3>Recent Verification Reports</h3>
+      <button class="export-btn">Export CSV</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Certificate ID</th>
+          <th>Student Name</th>
+          <th>Institution</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <!-- ADDED ID HERE -->
+      <tbody id="history-table-body">
+        <!-- Rows will be injected by JavaScript -->
+      </tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <div class="page-numbers">
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+      </div>
+      <button class="next-btn">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// EXPORT BUTTON
+document.querySelector('.export-btn').addEventListener('click', () => {
+  alert('CSV Export Started');
+});
+
+// PAGINATION BUTTONS
+const pageBtns = document.querySelectorAll('.page-btn');
+pageBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    pageBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// --- DATA MANAGEMENT & RENDERING ---
+
+// 1. Mock Data (In a real app, you would fetch this from an API or localStorage)
+const mockHistoryData = [
+  { id: "CER-0091", name: "Eleanor Shellstrop", institution: "Arizona State Univ.", date: "2026-05-11", status: "genuine" },
+  { id: "CER-0092", name: "Jason Mendoza", institution: "Jacksonville College", date: "2026-05-10", status: "fake" },
+  { id: "CER-0093", name: "Chidi Anagonye", institution: "Sorbonne University", date: "2026-05-09", status: "genuine" },
+  { id: "CER-0094", name: "Tahani Al-Jamil", institution: "Oxford University", date: "2026-05-08", status: "review" }
+];
+
+// If you save validation results on other pages, you'd retrieve it like this:
+// const historyData = JSON.parse(localStorage.getItem('acadVerifyHistory')) || mockHistoryData;
+const historyData = mockHistoryData;
+
+// 2. DOM Elements
+const tableBody = document.getElementById('history-table-body');
+const statTotal = document.getElementById('stat-total');
+const statGenuine = document.getElementById('stat-genuine');
+const statFake = document.getElementById('stat-fake');
+const statReview = document.getElementById('stat-review');
+
+const searchInput = document.getElementById('searchInput');
+const statusFilter = document.getElementById('statusFilter');
+
+// 3. Render Function
+function renderTable(data) {
+  // Clear existing rows
+  tableBody.innerHTML = '';
+  
+  // Calculate Stats
+  let genuineCount = 0;
+  let fakeCount = 0;
+  let reviewCount = 0;
+
+  data.forEach(item => {
+    // Tally stats
+    if (item.status === 'genuine') genuineCount++;
+    if (item.status === 'fake') fakeCount++;
+    if (item.status === 'review') reviewCount++;
+
+    // Create Row
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${item.id}</strong></td>
+      <td>${item.name}</td>
+      <td>${item.institution}</td>
+      <td>${item.date}</td>
+      <td><span class="badge ${item.status}">${item.status}</span></td>
+      <td><a class="view-btn" onclick="alert('Viewing report for ${item.id}')">View Report</a></td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  // Update Stat Cards
+  statTotal.textContent = data.length;
+  statGenuine.textContent = genuineCount;
+  statFake.textContent = fakeCount;
+  statReview.textContent = reviewCount;
+}
+
+// 4. Filtering Logic
+function filterData() {
+  const searchTerm = searchInput.value.toLowerCase();
+  const statusTerm = statusFilter.value;
+
+  const filteredData = historyData.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                          item.id.toLowerCase().includes(searchTerm) ||
+                          item.institution.toLowerCase().includes(searchTerm);
+    
+    const matchesStatus = statusTerm === 'All' || item.status === statusTerm;
+
+    return matchesSearch && matchesStatus;
+  });
+
+  renderTable(filteredData);
+}
+
+// 5. Event Listeners for Filters
+searchInput.addEventListener('input', filterData);
+statusFilter.addEventListener('change', filterData);
+
+// 6. Initial Render
+renderTable(historyData);
+
+</script>
+</body>
+</html>
