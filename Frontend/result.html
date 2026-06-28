@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AcadVerify — Verification Result</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#04070f;
+  --card:#0a1020;
+  --gold:#e8b84b;
+  --gold2:#f6d48a;
+  --teal:#00d4b4;
+  --cream:#ede8de;
+  --muted:#8f98b3;
+  --border:rgba(232,184,75,.16);
+
+  --green:#2ecc71;
+  --red:#ff5c72;
+  --amber:#ffbe55;
+}
+
+body{
+  background:var(--bg);
+  color:var(--cream);
+  font-family:'Outfit',sans-serif;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND */
+.bg{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+    radial-gradient(circle at top left, rgba(58,123,213,.16), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(0,212,180,.13), transparent 30%),
+    #04070f;
+}
+
+.grid{
+  position:fixed;
+  inset:0;
+  background-image:
+  linear-gradient(rgba(232,184,75,.04) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(232,184,75,.04) 1px, transparent 1px);
+
+  background-size:55px 55px;
+  mask-image:radial-gradient(circle at center, black 30%, transparent 100%);
+  z-index:-1;
+}
+
+/* NAVBAR */
+.nav{
+  width:100%;
+  padding:1.2rem 2.5rem;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  border-bottom:1px solid rgba(255,255,255,.05);
+
+  backdrop-filter:blur(20px);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:.9rem;
+}
+
+.logo-icon{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+
+  background:
+  linear-gradient(135deg,
+  rgba(232,184,75,.25),
+  rgba(0,212,180,.14));
+
+  border:1px solid rgba(232,184,75,.2);
+
+  font-size:1.2rem;
+}
+
+.logo h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.nav-links{
+  display:flex;
+  gap:1rem;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:var(--muted);
+
+  padding:.7rem 1.2rem;
+  border-radius:12px;
+
+  border:1px solid rgba(255,255,255,.06);
+
+  transition:.25s;
+}
+
+.nav-links a:hover{
+  color:var(--cream);
+  border-color:rgba(232,184,75,.3);
+  transform:translateY(-2px);
+}
+
+/* MAIN */
+.wrapper{
+  width:min(1200px,92%);
+  margin:3rem auto;
+}
+
+/* VERDICT */
+.verdict{
+  position:relative;
+  overflow:hidden;
+
+  padding:2rem;
+  border-radius:28px;
+
+  background:
+  linear-gradient(135deg,
+  rgba(46,204,113,.12),
+  rgba(0,212,180,.08));
+
+  border:1px solid rgba(46,204,113,.35);
+
+  margin-bottom:2rem;
+
+  box-shadow:
+  0 10px 40px rgba(0,0,0,.45);
+}
+
+.verdict::before{
+  content:'';
+  position:absolute;
+  inset:0;
+
+  background:
+  linear-gradient(120deg,
+  transparent 20%,
+  rgba(255,255,255,.08),
+  transparent 80%);
+
+  animation:shine 5s linear infinite;
+}
+
+@keyframes shine{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(100%)}
+}
+
+.verdict-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:2rem;
+  flex-wrap:wrap;
+}
+
+.v-left h1{
+  font-size:2.6rem;
+  margin-bottom:.4rem;
+}
+
+.v-left p{
+  color:#b6c1d8;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+
+  padding:.75rem 1.2rem;
+  border-radius:999px;
+
+  background:rgba(46,204,113,.18);
+
+  color:#7dffba;
+  font-weight:600;
+
+  border:1px solid rgba(46,204,113,.3);
+}
+
+.score-circle{
+  width:150px;
+  height:150px;
+  border-radius:50%;
+
+  background:
+  conic-gradient(var(--green) 0% 87%, rgba(255,255,255,.06) 87%);
+
+  display:grid;
+  place-items:center;
+
+  box-shadow:
+  0 0 30px rgba(46,204,113,.25);
+}
+
+.score-inner{
+  width:118px;
+  height:118px;
+  border-radius:50%;
+
+  background:#09111f;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.score-inner h2{
+  font-size:2rem;
+}
+
+.score-inner span{
+  font-size:.78rem;
+  color:var(--muted);
+}
+
+/* GRID */
+.result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.7rem;
+  margin-top:2rem;
+}
+
+.card{
+  background:rgba(8,13,24,.9);
+
+  border:1px solid rgba(255,255,255,.06);
+
+  border-radius:24px;
+
+  padding:1.7rem;
+
+  backdrop-filter:blur(18px);
+
+  box-shadow:
+  0 8px 30px rgba(0,0,0,.35);
+
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(232,184,75,.25);
+}
+
+.card h3{
+  margin-bottom:1.4rem;
+  font-size:1.2rem;
+
+  color:var(--gold2);
+}
+
+/* DETAILS */
+.detail{
+  display:flex;
+  justify-content:space-between;
+
+  padding:.9rem 0;
+
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.detail:last-child{
+  border:none;
+}
+
+.label{
+  color:var(--muted);
+}
+
+.value{
+  font-weight:500;
+}
+
+/* AI */
+.reason{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.05);
+
+  border-radius:14px;
+
+  padding:1rem;
+  margin-bottom:1rem;
+}
+
+.reason strong{
+  display:block;
+  margin-bottom:.4rem;
+  color:var(--gold2);
+}
+
+.reason p{
+  color:#b9c3da;
+  line-height:1.7;
+  font-size:.92rem;
+}
+
+/* BARS */
+.bar-wrap{
+  margin-bottom:1.4rem;
+}
+
+.bar-head{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:.5rem;
+}
+
+.bar{
+  height:12px;
+  border-radius:999px;
+  overflow:hidden;
+
+  background:rgba(255,255,255,.06);
+}
+
+.fill{
+  height:100%;
+  border-radius:999px;
+}
+
+.fill.ai{
+  width:90%;
+  background:linear-gradient(90deg,var(--teal),#63ffe4);
+}
+
+.fill.db{
+  width:82%;
+  background:linear-gradient(90deg,var(--gold),#ffe59c);
+}
+
+.fill.comp{
+  width:95%;
+  background:linear-gradient(90deg,#2ecc71,#a6ffcb);
+}
+
+/* ACTIONS */
+.actions{
+  margin-top:2rem;
+
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:1rem 1.5rem;
+  border:none;
+  border-radius:16px;
+
+  font-family:'Outfit',sans-serif;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:.3s;
+}
+
+.btn-primary{
+  background:
+  linear-gradient(135deg,var(--gold),#ffdd91);
+
+  color:#081018;
+
+  box-shadow:
+  0 8px 25px rgba(232,184,75,.28);
+}
+
+.btn-primary:hover{
+  transform:translateY(-3px);
+}
+
+.btn-secondary{
+  background:rgba(255,255,255,.04);
+
+  color:var(--cream);
+
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.btn-secondary:hover{
+  border-color:rgba(232,184,75,.25);
+  transform:translateY(-3px);
+}
+
+/* STATUS */
+.status{
+  margin-top:1.4rem;
+
+  padding:1rem 1.2rem;
+
+  border-radius:14px;
+
+  background:rgba(46,204,113,.08);
+
+  border:1px solid rgba(46,204,113,.25);
+
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+}
+
+.status-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+
+  box-shadow:
+  0 0 12px var(--green);
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+
+  .result-grid{
+    grid-template-columns:1fr;
+  }
+
+  .verdict-top{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .score-circle{
+    width:130px;
+    height:130px;
+  }
+
+  .score-inner{
+    width:100px;
+    height:100px;
+  }
+
+  .nav{
+    padding:1rem;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<!-- NAV -->
+<nav class="nav">
+
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+
+    <h2>AcadVerify</h2>
+  </div>
+
+  <div class="nav-links">
+    <a href="upload.html">← Upload</a>
+    <a href="history.html">History</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+
+</nav>
+
+<!-- MAIN -->
+<div class="wrapper">
+
+  <!-- VERDICT -->
+  <section class="verdict">
+
+    <div class="verdict-top">
+
+      <div class="v-left">
+
+        <div class="badge" id="badge">
+          ✅ Genuine Certificate
+        </div>
+
+        <h1 id="mainTitle">
+          Verification Successful
+        </h1>
+
+        <p>
+          AI + Database analysis confirms document authenticity
+        </p>
+
+      </div>
+
+      <!-- SCORE -->
+
+      <div class="score-circle">
+
+        <div class="score-inner">
+
+          <h2 id="score">87%</h2>
+
+          <span>Authenticity</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- STATUS -->
+
+    <div class="status">
+
+      <div class="status-dot"></div>
+
+      <span id="fileName">
+        File: certificate.pdf
+      </span>
+
+    </div>
+
+  </section>
+
+  <!-- GRID -->
+
+  <div class="result-grid">
+
+    <!-- DOCUMENT DETAILS -->
+
+    <div class="card">
+
+      <h3>Document Details</h3>
+
+      <div class="detail">
+        <span class="label">Document Type</span>
+        <span class="value">Academic Certificate</span>
+      </div>
+
+      <div class="detail">
+        <span class="label">Verification Result</span>
+        <span class="value" id="verdict">
+          Genuine
+        </span>
+      </div>
+
+      <div class="detail">
+        <span class="label">AI Confidence</span>
+        <span class="value" id="confidence">
+          87%
+        </span>
+      </div>
+
+      <div class="detail">
+        <span class="label">OCR Status</span>
+        <span class="value">Successful</span>
+      </div>
+
+    </div>
+
+    <!-- AI ANALYSIS -->
+
+    <div class="card">
+
+      <h3>AI Analysis</h3>
+
+      <div class="reason">
+
+        <strong>Document Integrity</strong>
+
+        <p id="analysisText">
+          The uploaded document appears authentic based on typography consistency and metadata validation.
+        </p>
+
+      </div>
+
+      <!-- BARS -->
+
+      <div class="bar-wrap">
+
+        <div class="bar-head">
+          <span>AI Pattern Match</span>
+          <span id="aiPercent">90%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill ai" id="aiBar"></div>
+        </div>
+
+      </div>
+
+      <div class="bar-wrap">
+
+        <div class="bar-head">
+          <span>Database Match</span>
+          <span>82%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill db"></div>
+        </div>
+
+      </div>
+
+      <div class="bar-wrap">
+
+        <div class="bar-head">
+          <span>Compliance Check</span>
+          <span>95%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill comp"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ACTIONS -->
+
+  <div class="actions">
+
+    <button class="btn btn-primary" id="downloadBtn">
+      View Full Report
+    </button>
+
+    <button class="btn btn-secondary" id="verifyAnotherBtn">
+      Verify Another Certificate
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+// GET STORED DATA
+const storedData =
+localStorage.getItem("certificateResult");
+
+// IF NO DATA
+if(!storedData){
+
+  alert("No certificate uploaded");
+
+  window.location.href =
+  "upload.html";
+
+}
+
+// PARSE DATA
+const data = JSON.parse(storedData);
+
+// ELEMENTS
+const verdictEl =
+document.getElementById("verdict");
+
+const scoreEl =
+document.getElementById("score");
+
+const fileNameEl =
+document.getElementById("fileName");
+
+const badgeEl =
+document.getElementById("badge");
+
+const titleEl =
+document.getElementById("mainTitle");
+
+const confidenceEl =
+document.getElementById("confidence");
+
+const analysisText =
+document.getElementById("analysisText");
+
+const aiBar =
+document.getElementById("aiBar");
+
+const aiPercent =
+document.getElementById("aiPercent");
+
+const scoreCircle =
+document.querySelector(".score-circle");
+
+// SET DATA
+verdictEl.innerText =
+data.verdict;
+
+scoreEl.innerText =
+data.score + "%";
+
+confidenceEl.innerText =
+data.score + "%";
+
+fileNameEl.innerText =
+"File: " + data.fileName;
+
+aiBar.style.width =
+data.score + "%";
+
+aiPercent.innerText =
+data.score + "%";
+
+// DEFAULT VALUES
+let circleColor = "#2ecc71";
+
+let analysisMessage =
+"The uploaded document appears authentic based on typography consistency and metadata validation.";
+
+// GENUINE
+if(data.verdict === "GENUINE"){
+
+  verdictEl.style.color =
+  "#2ecc71";
+
+  badgeEl.innerHTML =
+  "✅ Genuine Certificate";
+
+  titleEl.innerText =
+  "Verification Successful";
+
+  circleColor =
+  "#2ecc71";
+
+}
+
+// FAKE
+else if(data.verdict === "FAKE"){
+
+  verdictEl.style.color =
+  "#ff5c72";
+
+  badgeEl.innerHTML =
+  "❌ Fake Certificate";
+
+  badgeEl.style.background =
+  "rgba(255,92,114,.15)";
+
+  badgeEl.style.color =
+  "#ff5c72";
+
+  badgeEl.style.border =
+  "1px solid rgba(255,92,114,.3)";
+
+  titleEl.innerText =
+  "Forgery Detected";
+
+  analysisMessage =
+  "AI detected multiple anomalies in the uploaded document.";
+
+  circleColor =
+  "#ff5c72";
+
+  document.querySelector('.verdict').style.background =
+  "linear-gradient(135deg,rgba(255,92,114,.12),rgba(255,92,114,.08))";
+  
+  document.querySelector('.verdict').style.borderColor =
+  "rgba(255,92,114,.35)";
+
+}
+
+// REVIEW
+else{
+
+  verdictEl.style.color =
+  "#ffbe55";
+
+  badgeEl.innerHTML =
+  "⚠ Needs Review";
+
+  badgeEl.style.background =
+  "rgba(255,190,85,.15)";
+
+  badgeEl.style.color =
+  "#ffbe55";
+
+  badgeEl.style.border =
+  "1px solid rgba(255,190,85,.3)";
+
+  titleEl.innerText =
+  "Manual Review Recommended";
+
+  analysisMessage =
+  "The document requires additional human verification.";
+
+  circleColor =
+  "#ffbe55";
+
+  document.querySelector('.verdict').style.background =
+  "linear-gradient(135deg,rgba(255,190,85,.12),rgba(255,190,85,.08))";
+  
+  document.querySelector('.verdict').style.borderColor =
+  "rgba(255,190,85,.35)";
+
+}
+
+// SET ANALYSIS
+analysisText.innerText =
+analysisMessage;
+
+// DYNAMIC SCORE CIRCLE
+scoreCircle.style.background =
+"conic-gradient(" +
+circleColor +
+" 0% " +
+data.score +
+"%, rgba(255,255,255,.06) " +
+data.score +
+"%)";
+
+// ✅ FIXED: Navigate to report.html
+document.getElementById("downloadBtn")
+.addEventListener("click",()=>{
+  window.location.href = "report.html";
+});
+
+// VERIFY AGAIN BUTTON
+document.getElementById("verifyAnotherBtn")
+.addEventListener("click",()=>{
+
+  window.location.href =
+  "upload.html";
+
+});
+
+</script>
+
+</body>
+</html>

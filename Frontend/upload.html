@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AcadVerify — Upload Certificate</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04070f;--bg2:#070c18;
+  --gold:#e8b84b;--gold2:#f5d280;--gold3:#a07828;
+  --teal:#00d4b4;--blue:#3a7bd5;
+  --cream:#ede8de;--muted:#6b7694;--muted2:#9aa3bd;
+  --border:rgba(232,184,75,0.2);--red:#f06060;--green:#2ecc71;
+}
+html,body{height:100%;background:var(--bg);font-family:'Outfit',sans-serif;color:var(--cream);}
+
+/* BACKGROUND */
+.bg{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at top left,rgba(58,123,213,.16),transparent 30%),radial-gradient(circle at bottom right,rgba(0,212,180,.13),transparent 30%),#04070f;}
+.grid{position:fixed;inset:0;background-image:linear-gradient(rgba(232,184,75,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(232,184,75,.04) 1px,transparent 1px);background-size:55px 55px;mask-image:radial-gradient(circle at center,black 30%,transparent 100%);z-index:-1;}
+
+/* NAVBAR */
+.nav{width:100%;padding:1.2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.05);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:.9rem;}
+.logo-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,rgba(232,184,75,.25),rgba(0,212,180,.14));border:1px solid rgba(232,184,75,.2);font-size:1.2rem;}
+.logo h2{font-family:'Cormorant Garamond',serif;font-size:2rem;background:linear-gradient(135deg,var(--gold2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;gap:1rem;}
+.nav-links a{text-decoration:none;color:var(--muted);padding:.7rem 1.2rem;border-radius:12px;border:1px solid rgba(255,255,255,.06);transition:.25s;}
+.nav-links a:hover{color:var(--cream);border-color:rgba(232,184,75,.3);transform:translateY(-2px);}
+
+/* MAIN */
+.wrapper{width:min(900px,92%);margin:4rem auto;}
+.upload-card{background:rgba(8,13,24,.9);border:1px solid rgba(255,255,255,.06);border-radius:28px;padding:3rem 2.5rem;backdrop-filter:blur(18px);box-shadow:0 10px 40px rgba(0,0,0,.35);}
+.upload-header{text-align:center;margin-bottom:2.5rem;}
+.upload-header h1{font-size:2.4rem;margin-bottom:.6rem;font-family:'Cormorant Garamond',serif;}
+.upload-header h1 span{background:linear-gradient(90deg,var(--gold2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.upload-header p{color:var(--muted2);font-size:.92rem;}
+
+/* DROP ZONE */
+.drop-zone{border:2px dashed rgba(232,184,75,.25);border-radius:18px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .3s;background:rgba(255,255,255,.02);margin-bottom:1.5rem;}
+.drop-zone:hover,.drop-zone.drag-over{border-color:rgba(232,184,75,.5);background:rgba(232,184,75,.05);transform:translateY(-2px);}
+.drop-zone-icon{font-size:3.5rem;margin-bottom:1rem;opacity:.6;}
+.drop-zone h3{font-size:1.15rem;margin-bottom:.5rem;}
+.drop-zone p{color:var(--muted);font-size:.88rem;}
+.drop-zone input{display:none;}
+.file-info{background:rgba(232,184,75,.08);border:1px solid rgba(232,184,75,.2);border-radius:12px;padding:1rem 1.2rem;display:none;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.file-name{font-weight:500;color:var(--gold2);}
+.remove-btn{background:rgba(240,96,96,.15);border:1px solid rgba(240,96,96,.3);border-radius:8px;padding:.4rem .8rem;color:#f09090;font-size:.8rem;cursor:pointer;transition:.2s;}
+.remove-btn:hover{background:rgba(240,96,96,.25);}
+
+/* BUTTON */
+.btn-upload{width:100%;padding:1.1rem;border:none;border-radius:14px;font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#d4a43c,#ecc85e,#b8852a);color:#05080f;box-shadow:0 6px 24px rgba(232,184,75,.3);transition:.25s;opacity:.5;pointer-events:none;}
+.btn-upload.active{opacity:1;pointer-events:all;}
+.btn-upload.active:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(232,184,75,.45);}
+.btn-upload:disabled{opacity:.3;}
+
+/* SPINNER */
+.spinner{display:none;width:18px;height:18px;border:2px solid rgba(5,8,15,.3);border-top-color:#05080f;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:768px){.nav{padding:1rem;}.nav-links{display:none;}.upload-card{padding:2rem 1.5rem;}}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <h2>AcadVerify</h2>
+  </div>
+  <div class="nav-links">
+    <a href="history.html">History</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+</nav>
+
+<div class="wrapper">
+  <div class="upload-card">
+    <div class="upload-header">
+      <h1>Upload <span>Certificate</span></h1>
+      <p>Upload your academic certificate for AI-powered verification</p>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+      <div class="drop-zone-icon">📄</div>
+      <h3>Drop your certificate here</h3>
+      <p>or click to browse • PDF, JPG, PNG accepted</p>
+      <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png"/>
+    </div>
+
+    <div class="file-info" id="fileInfo">
+      <span class="file-name" id="fileName"></span>
+      <button class="remove-btn" id="removeBtn">Remove</button>
+    </div>
+
+    <button class="btn-upload" id="uploadBtn">
+      <span id="btnText">Verify Certificate</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+  </div>
+</div>
+
+<script>
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('fileInput');
+const fileInfo=document.getElementById('fileInfo');
+const fileName=document.getElementById('fileName');
+const uploadBtn=document.getElementById('uploadBtn');
+const removeBtn=document.getElementById('removeBtn');
+const btnText=document.getElementById('btnText');
+const spinner=document.getElementById('spinner');
+
+let selectedFile=null;
+
+dropZone.addEventListener('click',()=>fileInput.click());
+
+fileInput.addEventListener('change',e=>{
+  if(e.target.files.length>0){
+    selectedFile=e.target.files[0];
+    fileName.textContent=selectedFile.name;
+    fileInfo.style.display='flex';
+    dropZone.style.display='none';
+    uploadBtn.classList.add('active');
+  }
+});
+
+dropZone.addEventListener('dragover',e=>{
+  e.preventDefault();
+  dropZone.classList.add('drag-over');
+});
+
+dropZone.addEventListener('dragleave',()=>{
+  dropZone.classList.remove('drag-over');
+});
+
+dropZone.addEventListener('drop',e=>{
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  if(e.dataTransfer.files.length>0){
+    selectedFile=e.dataTransfer.files[0];
+    fileName.textContent=selectedFile.name;
+    fileInfo.style.display='flex';
+    dropZone.style.display='none';
+    uploadBtn.classList.add('active');
+  }
+});
+
+removeBtn.addEventListener('click',()=>{
+  selectedFile=null;
+  fileInfo.style.display='none';
+  dropZone.style.display='block';
+  uploadBtn.classList.remove('active');
+  fileInput.value='';
+});
+
+uploadBtn.addEventListener('click',async()=>{
+  if(!selectedFile)return;
+  
+  btnText.style.display='none';
+  spinner.style.display='block';
+  uploadBtn.disabled=true;
+  
+  await new Promise(r=>setTimeout(r,2000));
+  
+  // Simulate verification result
+  const results=['GENUINE','FAKE','REVIEW'];
+  const verdict=results[Math.floor(Math.random()*results.length)];
+  const score=verdict==='GENUINE'?85+Math.floor(Math.random()*13):verdict==='FAKE'?20+Math.floor(Math.random()*30):50+Math.floor(Math.random()*20);
+  
+  localStorage.setItem('certificateResult',JSON.stringify({
+    verdict,
+    score,
+    fileName:selectedFile.name
+  }));
+  
+  window.location.href='result.html';
+});
+</script>
+</body>
+</html>
